@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -64,21 +64,18 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
             reference = mDatabase.getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("movies");
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         service = Util.getMovieService();
 
         recyclerView = findViewById(R.id.movie_card_view);
 
-        GridLayoutManager gridLayoutManager;
-        gridLayoutManager = new GridLayoutManager(getApplicationContext(), 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager layoutManager;
+        layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
         mAdapter = new FireMovieAdapter(getApplicationContext(), mMovies, this);
 
-        //MovieData thread = new MovieData();
-
-        //thread.execute();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +129,11 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
 
     @Override
     public void recyclerViewListClicked(View view, int position) {
+        String movieSource = mMovies.get(position).getFilename();
+
+        Intent intent = new Intent(getApplicationContext(),MoviePlayer.class);
+        intent.putExtra("SOURCE", movieSource);
+        startActivity(intent);
 
     }
 

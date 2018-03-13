@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -50,9 +50,9 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
 
         recyclerView = findViewById(R.id.movie_card_view);
 
-        GridLayoutManager gridLayoutManager;
-        gridLayoutManager = new GridLayoutManager(getApplicationContext(), 3);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager layoutManager;
+        layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
         mAdapter = new MovieAdapter(getApplicationContext(), cards, this);
         recyclerView.setAdapter(mAdapter);
 
@@ -66,7 +66,8 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
     @Override
     public void recyclerViewListClicked(View view, int position) {
         //System.out.println(cards.get(position).getTitle());
-        new ApiData().execute(cards.get(position).getTitle());
+        AsyncParams params = new AsyncParams(cards.get(position).getTitle(), position);
+        new ApiData().execute(params);
     }
 
 
@@ -105,6 +106,7 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
                 String query = FilenameUtils.removeExtension(withext);
                 CardModel card = new CardModel();
                 card.setTitle(query);
+                card.setFilename(file.getAbsolutePath());
                 cards.add(card);
             }
             return null;
@@ -117,18 +119,20 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
         }
     }
 
-    private class ApiData extends AsyncTask<String, Void, Void>{
+    private class ApiData extends AsyncTask<AsyncParams, Void, Void>{
 
         @Override
-        protected Void doInBackground(String... query) {
-            service.search("0359c81bed7cce4e13cd5a744ea5cfbe", query[0]).enqueue(new Callback<PageResult>() {
+        protected Void doInBackground(final AsyncParams... params) {
+            service.search("0359c81bed7cce4e13cd5a744ea5cfbe", params[0].query).enqueue(new Callback<PageResult>() {
                 @Override
                 public void onResponse(Call<PageResult> call, Response<PageResult> response) {
                     System.out.println("test");
                     movies = response.body().getResults();
                     System.out.println(movies.get(0).getOverview());
                     MovieResult result = movies.get(0);
+                    result.setFilename(cards.get(params[0].position).getFilename());
                     reference.child(result.getOriginalTitle()).setValue(result);
+                    movies = null;
                     //System.out.println(response.body().getMovies());
 
                 }
@@ -143,5 +147,15 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
         }
 
 
+    }
+
+    private static class AsyncParams{
+        private String query;
+        private int position;
+
+        public AsyncParams(String query, int position){
+            this.query = query;
+            this.position = position;
+        }
     }
 }

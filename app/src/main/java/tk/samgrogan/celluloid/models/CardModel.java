@@ -7,6 +7,7 @@ package tk.samgrogan.celluloid.models;
 public class CardModel {
     String title;
     String poster;
+    String filename;
 
     public String getTitle() {
         return title;
@@ -22,5 +23,13 @@ public class CardModel {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

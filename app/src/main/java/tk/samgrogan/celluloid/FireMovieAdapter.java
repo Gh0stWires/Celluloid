@@ -39,11 +39,11 @@ public class FireMovieAdapter extends RecyclerView.Adapter<FireMovieAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String baseurl = "http://image.tmdb.org/t/p/w185";
+        String baseurl = "http://image.tmdb.org/t/p/w780";
         String fullUrl = baseurl + cards.get(position).getPosterPath();
         System.out.println(fullUrl);
         Picasso.with(mContext).load(fullUrl).into(holder.poster);
-        holder.title.setText(cards.get(position).getTitle());
+        //holder.title.setText(cards.get(position).getTitle());
     }
 
 
@@ -63,7 +63,7 @@ public class FireMovieAdapter extends RecyclerView.Adapter<FireMovieAdapter.View
             super(itemView);
             cardView = itemView.findViewById(R.id.movie_card);
             poster = itemView.findViewById(R.id.poster);
-            title = itemView.findViewById(R.id.title);
+            //title = itemView.findViewById(R.id.title);
             itemView.setOnClickListener(this);
         }
 

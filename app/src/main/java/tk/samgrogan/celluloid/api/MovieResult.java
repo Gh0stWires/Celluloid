@@ -11,6 +11,7 @@ import java.util.List;
 
 public class MovieResult {
 
+    private String filename;
 
     @SerializedName("vote_count")
     @Expose
@@ -166,5 +167,14 @@ public class MovieResult {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
 
 }
