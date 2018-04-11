@@ -129,10 +129,21 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
 
     @Override
     public void recyclerViewListClicked(View view, int position) {
-        String movieSource = mMovies.get(position).getFilename();
+        /*
 
         Intent intent = new Intent(getApplicationContext(),MoviePlayer.class);
+
+        startActivity(intent);*/
+        String movieSource = mMovies.get(position).getFilename();
+        String movieOverview = mMovies.get(position).getOverview();
+        String movieTitle = mMovies.get(position).getTitle();
+        String movieDrop = mMovies.get(position).getBackdropPath();
+
+        Intent intent = new Intent(getApplicationContext(), movieDetailActivity.class);
         intent.putExtra("SOURCE", movieSource);
+        intent.putExtra("OVERVIEW", movieOverview);
+        intent.putExtra("TITLE", movieTitle);
+        intent.putExtra("BACKDROP", movieDrop);
         startActivity(intent);
 
     }

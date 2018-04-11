@@ -13,6 +13,8 @@ public class MovieResult {
 
     private String filename;
 
+    private int movieTime;
+
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
@@ -174,6 +176,14 @@ public class MovieResult {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public int getMovieTime() {
+        return movieTime;
+    }
+
+    public void setMovieTime(int movieTime) {
+        this.movieTime = movieTime;
     }
 
 
