@@ -1,12 +1,16 @@
 package tk.samgrogan.celluloid;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +37,7 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
     private RecyclerView recyclerView;
     private DatabaseReference reference;
     private List<MovieResult> movies;
+    private int listPos;
     private Api service;
 
 
@@ -64,10 +69,32 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
     }
 
     @Override
-    public void recyclerViewListClicked(View view, int position) {
+    public void recyclerViewListClicked(View view, final int position) {
+        listPos = position;
+        showDialog();
         //System.out.println(cards.get(position).getTitle());
-        AsyncParams params = new AsyncParams(cards.get(position).getTitle(), position);
-        new ApiData().execute(params);
+
+
+
+    }
+
+    private void showDialog(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Enter Movie Title to find Movie meta data");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        alertDialog.setView(input);
+        alertDialog.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AsyncParams params = new AsyncParams(input.getText().toString(), listPos);
+                new ApiData().execute(params);
+
+            }
+        });
+
+        alertDialog.show();
+
     }
 
 
