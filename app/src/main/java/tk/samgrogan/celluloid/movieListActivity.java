@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -71,8 +71,8 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
 
         recyclerView = findViewById(R.id.movie_card_view);
 
-        LinearLayoutManager layoutManager;
-        layoutManager = new LinearLayoutManager(getApplicationContext());
+        GridLayoutManager layoutManager;
+        layoutManager = new GridLayoutManager(getApplicationContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new FireMovieAdapter(getApplicationContext(), mMovies, this);
 

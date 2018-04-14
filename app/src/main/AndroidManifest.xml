@@ -32,8 +32,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MetaGather" />
-        <activity android:name=".MoviePlayer"
-            android:theme="@style/AppThemePlayer"/>
+        <activity
+            android:name=".MoviePlayer"
+            android:theme="@style/AppThemePlayer" />
+        <activity android:name=".MetaBrowse"></activity>
     </application>
 
 </manifest>

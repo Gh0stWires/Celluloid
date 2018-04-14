@@ -1,6 +1,7 @@
 package tk.samgrogan.celluloid;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -71,7 +72,9 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
     @Override
     public void recyclerViewListClicked(View view, final int position) {
         listPos = position;
-        showDialog();
+        //showDialog();
+        Intent intent = new Intent(getApplicationContext(), MetaBrowse.class);
+        startActivity(intent);
         //System.out.println(cards.get(position).getTitle());
 
 
