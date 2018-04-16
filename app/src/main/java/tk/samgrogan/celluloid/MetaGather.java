@@ -23,12 +23,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import tk.samgrogan.celluloid.api.Api;
 import tk.samgrogan.celluloid.api.MovieResult;
-import tk.samgrogan.celluloid.api.PageResult;
 import tk.samgrogan.celluloid.models.CardModel;
 
 public class MetaGather extends AppCompatActivity implements RecyclerViewClickListener{
@@ -72,9 +68,8 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
     @Override
     public void recyclerViewListClicked(View view, final int position) {
         listPos = position;
-        //showDialog();
-        Intent intent = new Intent(getApplicationContext(), MetaBrowse.class);
-        startActivity(intent);
+        showDialog();
+
         //System.out.println(cards.get(position).getTitle());
 
 
@@ -90,8 +85,11 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
         alertDialog.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                AsyncParams params = new AsyncParams(input.getText().toString(), listPos);
-                new ApiData().execute(params);
+                Intent intent = new Intent(getApplicationContext(), MetaBrowse.class);
+                String entry = input.getText().toString();
+                intent.putExtra("TITLEENTRY", entry);
+                startActivity(intent);
+
 
             }
         });
@@ -149,35 +147,7 @@ public class MetaGather extends AppCompatActivity implements RecyclerViewClickLi
         }
     }
 
-    private class ApiData extends AsyncTask<AsyncParams, Void, Void>{
 
-        @Override
-        protected Void doInBackground(final AsyncParams... params) {
-            service.search("0359c81bed7cce4e13cd5a744ea5cfbe", params[0].query).enqueue(new Callback<PageResult>() {
-                @Override
-                public void onResponse(Call<PageResult> call, Response<PageResult> response) {
-                    System.out.println("test");
-                    movies = response.body().getResults();
-                    System.out.println(movies.get(0).getOverview());
-                    MovieResult result = movies.get(0);
-                    result.setFilename(cards.get(params[0].position).getFilename());
-                    reference.child(result.getOriginalTitle()).setValue(result);
-                    movies = null;
-                    //System.out.println(response.body().getMovies());
-
-                }
-
-                @Override
-                public void onFailure(Call<PageResult> call, Throwable t) {
-                    System.out.println(t);
-
-                }
-            });
-            return null;
-        }
-
-
-    }
 
     private static class AsyncParams{
         private String query;

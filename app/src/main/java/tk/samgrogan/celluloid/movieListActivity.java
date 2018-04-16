@@ -1,15 +1,19 @@
 package tk.samgrogan.celluloid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -81,10 +85,10 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),MetaGather.class);
-                startActivity(intent);
+                showDialog();
             }
         });
+
 
 
 
@@ -126,6 +130,28 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
 
     }
 
+    private void showDialog(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Enter Movie Title to find Movie meta data");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        alertDialog.setView(input);
+        alertDialog.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(getApplicationContext(), MetaBrowse.class);
+                String entry = input.getText().toString();
+                intent.putExtra("TITLEENTRY", entry);
+                startActivity(intent);
+
+
+            }
+        });
+
+        alertDialog.show();
+
+    }
+
 
     @Override
     public void recyclerViewListClicked(View view, int position) {
@@ -138,6 +164,7 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
         String movieOverview = mMovies.get(position).getOverview();
         String movieTitle = mMovies.get(position).getTitle();
         String movieDrop = mMovies.get(position).getBackdropPath();
+
 
         Intent intent = new Intent(getApplicationContext(), movieDetailActivity.class);
         intent.putExtra("SOURCE", movieSource);

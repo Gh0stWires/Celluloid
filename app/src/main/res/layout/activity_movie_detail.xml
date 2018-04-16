@@ -37,6 +37,7 @@
 
                 <ImageButton
                     android:layout_width="100dp"
+                    android:id="@+id/play_btn"
                     android:layout_height="100dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
@@ -112,6 +113,24 @@
                 app:layout_constraintStart_toEndOf="@+id/textView"
                 app:layout_constraintTop_toTopOf="@+id/textView"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:id="@+id/add_file"
+                android:layout_height="wrap_content"
+                android:text="Add File Location"
+                android:background="@color/primaryLightColor"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:onClick="findFile"
+                app:layout_constraintBottom_toTopOf="@+id/ratingBar2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.091"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintVertical_bias="0.833" />
 
             <RatingBar
                 android:id="@+id/ratingBar2"
