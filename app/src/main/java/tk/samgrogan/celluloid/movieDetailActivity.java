@@ -1,6 +1,9 @@
 package tk.samgrogan.celluloid;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -32,8 +35,11 @@ public class movieDetailActivity extends AppCompatActivity {
     private String source;
     private String title;
     private String filePath;
+    private ImageButton play;
     private DatabaseReference reference;
+    private PackageManager packageManager;
     private Button fileBtn;
+    private long position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +47,10 @@ public class movieDetailActivity extends AppCompatActivity {
         Intent passedData = getIntent();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        if (mAuth.getCurrentUser() != null){
-            reference = mDatabase.getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("movies");
-        }
+
+
+
+        packageManager = getPackageManager();
 
         setContentView(R.layout.activity_movie_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
@@ -52,7 +59,7 @@ public class movieDetailActivity extends AppCompatActivity {
 
         TextView overview = findViewById(R.id.overview);
         ImageView backDrop = findViewById(R.id.backdrop);
-        ImageButton play = findViewById(R.id.play_btn);
+        play = findViewById(R.id.play_btn);
         fileBtn = findViewById(R.id.add_file);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -67,22 +74,31 @@ public class movieDetailActivity extends AppCompatActivity {
         String baseurl = "http://image.tmdb.org/t/p/w780";
         String fullUrl = baseurl + passedData.getStringExtra("BACKDROP");
         title = passedData.getStringExtra("TITLE");
+        position = passedData.getLongExtra("TIME", 0);
+        play.setVisibility(View.INVISIBLE);
+
+        if (mAuth.getCurrentUser() != null){
+            reference = mDatabase.getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("movies");
+        }
+
+
 
         overview.setText(passedData.getStringExtra("OVERVIEW"));
         Picasso.with(getApplicationContext()).load(fullUrl).into(backDrop);
         source = passedData.getStringExtra("SOURCE");
 
-        if(source == null){
-            play.setVisibility(View.INVISIBLE);
+        if(source != null || filePath != null){
+            play.setVisibility(View.VISIBLE);
+            fileBtn.setText("Change File Location");
+
+        }else{
             fileBtn.setText("Add File Location");
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MoviePlayer.class);
-                intent.putExtra("SOURCE", source);
-                startActivity(intent);
+
             }
         });
 
@@ -100,10 +116,38 @@ public class movieDetailActivity extends AppCompatActivity {
         }
 
     public void startPlayback(View view) {
-        Intent intent = new Intent(getApplicationContext(), MoviePlayer.class);
-        intent.putExtra("SOURCE", source);
-        intent.putExtra("TITLE", title);
-        startActivity(intent);
+        if (isPackageInstalled("org.videolan.vlc", packageManager)) {
+            int vlcRequestCode = 42;
+            Uri uri = Uri.parse(source);
+            Intent vlcIntent = new Intent(Intent.ACTION_VIEW);
+            vlcIntent.setPackage("org.videolan.vlc");
+            vlcIntent.setDataAndNormalize(uri);
+            vlcIntent.putExtra("title", title);
+            vlcIntent.putExtra("from_start", false);
+            vlcIntent.putExtra("position", position);
+            vlcIntent.setComponent(new ComponentName("org.videolan.vlc", "org.videolan.vlc.gui.video.VideoPlayerActivity"));
+            startActivityForResult(vlcIntent, vlcRequestCode);
+
+
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MoviePlayer.class);
+            if (source != null) {
+                intent.putExtra("SOURCE", source);
+            } else {
+                intent.putExtra("SOURCE", filePath);
+            }
+            intent.putExtra("TITLE", title);
+            startActivity(intent);
+        }
+    }
+
+    private boolean isPackageInstalled(String packagename, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packagename, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     public void findFile(View view) {
@@ -125,10 +169,17 @@ public class movieDetailActivity extends AppCompatActivity {
             filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
             reference.child(title).child("filename").setValue(filePath);
             fileBtn.setText("Change File Location");
+            play.setVisibility(View.VISIBLE);
+
 
 
             // Do anything with file
             System.out.println(filePath);
+        }
+
+        if (requestCode == 42 && resultCode == RESULT_OK){
+            position = data.getLongExtra("extra_position", 0l);
+            reference.child(title).child("movieTime").setValue(data.getLongExtra("extra_position", 0l));
         }
     }
 }

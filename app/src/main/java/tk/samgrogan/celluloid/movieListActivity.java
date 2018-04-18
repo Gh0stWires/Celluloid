@@ -164,6 +164,7 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
         String movieOverview = mMovies.get(position).getOverview();
         String movieTitle = mMovies.get(position).getTitle();
         String movieDrop = mMovies.get(position).getBackdropPath();
+        long time = mMovies.get(position).getMovieTime();
 
 
         Intent intent = new Intent(getApplicationContext(), movieDetailActivity.class);
@@ -171,6 +172,7 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
         intent.putExtra("OVERVIEW", movieOverview);
         intent.putExtra("TITLE", movieTitle);
         intent.putExtra("BACKDROP", movieDrop);
+        intent.putExtra("TIME", time);
         startActivity(intent);
 
     }
