@@ -8,6 +8,7 @@
     card_view:cardMaxElevation="4dp"
     card_view:cardElevation="2dp"
     card_view:barrierDirection="end"
+    card_view:cardUseCompatPadding="true"
     card_view:cardPreventCornerOverlap="true">
 
     <LinearLayout

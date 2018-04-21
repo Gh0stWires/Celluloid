@@ -2,13 +2,17 @@ package tk.samgrogan.celluloid;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -39,7 +43,9 @@ public class movieDetailActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private PackageManager packageManager;
     private Button fileBtn;
+    private boolean playerSetting;
     private long position = 0;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,8 @@ public class movieDetailActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        playerSetting = preferences.getBoolean("player_pref", true);
 
 
         packageManager = getPackageManager();
@@ -115,21 +123,58 @@ public class movieDetailActivity extends AppCompatActivity {
 
         }
 
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        playerSetting = preferences.getBoolean("player_pref", true);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+
+        if (item.getItemId() == R.id.settings){
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void startPlayback(View view) {
-        if (isPackageInstalled("org.videolan.vlc", packageManager)) {
-            int vlcRequestCode = 42;
-            Uri uri = Uri.parse(source);
-            Intent vlcIntent = new Intent(Intent.ACTION_VIEW);
-            vlcIntent.setPackage("org.videolan.vlc");
-            vlcIntent.setDataAndNormalize(uri);
-            vlcIntent.putExtra("title", title);
-            vlcIntent.putExtra("from_start", false);
-            vlcIntent.putExtra("position", position);
-            vlcIntent.setComponent(new ComponentName("org.videolan.vlc", "org.videolan.vlc.gui.video.VideoPlayerActivity"));
-            startActivityForResult(vlcIntent, vlcRequestCode);
+        if (playerSetting) {
+            if (isPackageInstalled("org.videolan.vlc", packageManager)) {
+                int vlcRequestCode = 42;
+                Uri uri = Uri.parse(source);
+                Intent vlcIntent = new Intent(Intent.ACTION_VIEW);
+                vlcIntent.setPackage("org.videolan.vlc");
+                vlcIntent.setDataAndNormalize(uri);
+                vlcIntent.putExtra("title", title);
+                vlcIntent.putExtra("from_start", false);
+                vlcIntent.putExtra("position", position);
+                vlcIntent.setComponent(new ComponentName("org.videolan.vlc", "org.videolan.vlc.gui.video.VideoPlayerActivity"));
+                startActivityForResult(vlcIntent, vlcRequestCode);
 
 
-        } else {
+            }
+        }
+
+        else {
             Intent intent = new Intent(getApplicationContext(), MoviePlayer.class);
             if (source != null) {
                 intent.putExtra("SOURCE", source);
