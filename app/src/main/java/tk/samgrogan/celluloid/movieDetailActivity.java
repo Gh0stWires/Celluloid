@@ -1,5 +1,6 @@
 package tk.samgrogan.celluloid;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,7 +8,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +39,7 @@ import java.util.regex.Pattern;
  */
 public class movieDetailActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_CODE = 123;
     private String source;
     private String title;
     private String filePath;
@@ -44,6 +48,7 @@ public class movieDetailActivity extends AppCompatActivity {
     private PackageManager packageManager;
     private Button fileBtn;
     private boolean playerSetting;
+    private boolean check = true;
     private long position = 0;
     private SharedPreferences preferences;
 
@@ -53,6 +58,7 @@ public class movieDetailActivity extends AppCompatActivity {
         Intent passedData = getIntent();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        permCheck();
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         playerSetting = preferences.getBoolean("player_pref", true);
@@ -69,7 +75,7 @@ public class movieDetailActivity extends AppCompatActivity {
         ImageView backDrop = findViewById(R.id.backdrop);
         play = findViewById(R.id.play_btn);
         fileBtn = findViewById(R.id.add_file);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
 
 
         // Show the Up button in the action bar.
@@ -103,9 +109,16 @@ public class movieDetailActivity extends AppCompatActivity {
             fileBtn.setText("Add File Location");
         }
 
-        fab.setOnClickListener(new View.OnClickListener() {
+
+
+        fileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (check){
+                    findFile();
+                }else{
+                    reRequest();
+                }
 
             }
         });
@@ -123,6 +136,16 @@ public class movieDetailActivity extends AppCompatActivity {
 
         }
 
+    public void permCheck() {
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CODE);
+
+        }
+
+    }
+
 
 
     @Override
@@ -131,6 +154,24 @@ public class movieDetailActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+
+            case PERMISSION_CODE:{
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    check = true;
+                }else {
+                    check = false;
+                }
+                return;
+
+            }
+
+        }
     }
 
     @Override
@@ -195,7 +236,7 @@ public class movieDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void findFile(View view) {
+    public void findFile() {
         new MaterialFilePicker()
                 .withActivity(this)
                 .withRequestCode(1)
@@ -204,6 +245,14 @@ public class movieDetailActivity extends AppCompatActivity {
                 .withHiddenFiles(true) // Show hidden files and folders
                 .start();
 
+    }
+
+    public void reRequest(){
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CODE);
+
+        }
     }
 
     @Override

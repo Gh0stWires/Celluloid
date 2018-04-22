@@ -76,7 +76,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_editor_absoluteX="127dp">
@@ -85,13 +85,16 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="Synopsis:"
                 android:textColor="@color/primaryTextColor"
                 android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.042" />
 
             <TextView
                 android:id="@+id/overview"
@@ -105,7 +108,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/textView"
                 android:textColor="@color/primaryTextColor"
-                android:textSize="10sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/ratingBar2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.652"
@@ -115,32 +118,36 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <Button
-                android:layout_width="wrap_content"
                 android:id="@+id/add_file"
-                android:layout_height="wrap_content"
-                android:text="Add File Location"
-                android:background="@color/primaryLightColor"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:textSize="18dp"
+                android:textAllCaps="false"
+                android:shadowColor="#A8A8A8"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:onClick="findFile"
+                android:background="@drawable/add_button"
+                android:text="Add File Location"
                 app:layout_constraintBottom_toTopOf="@+id/ratingBar2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.091"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
-                app:layout_constraintVertical_bias="0.833" />
+                style="?android:attr/borderlessButtonStyle"
+                app:layout_constraintTop_toBottomOf="@+id/overview" />
 
             <RatingBar
                 android:id="@+id/ratingBar2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="128dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="140dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:numStars="5"
                 android:rating="3"
-                android:layout_marginTop="156dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -151,15 +158,7 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|start"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@+id/movie_detail_container"
-        app:layout_anchorGravity="top|end"
-        app:srcCompat="@android:drawable/stat_notify_chat" />
+
 
 
 </android.support.design.widget.CoordinatorLayout>

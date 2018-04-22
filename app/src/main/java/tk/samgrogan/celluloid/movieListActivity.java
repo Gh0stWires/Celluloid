@@ -1,11 +1,15 @@
 package tk.samgrogan.celluloid;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -56,6 +60,7 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
     private RecyclerView recyclerView;
     private List<MovieResult> mMovies = new ArrayList<>();
     private DatabaseReference reference;
+    private final int PERMISSION_CODE = 123;
     private List<CardModel> cards = new ArrayList<>();
 
     @Override
@@ -67,6 +72,8 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
         if (mAuth.getCurrentUser() != null){
             reference = mDatabase.getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("movies");
         }
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
