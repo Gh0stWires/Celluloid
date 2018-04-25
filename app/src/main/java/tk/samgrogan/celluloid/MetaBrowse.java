@@ -1,5 +1,6 @@
 package tk.samgrogan.celluloid;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -76,6 +77,8 @@ public class MetaBrowse extends AppCompatActivity implements RecyclerViewClickLi
     public void recyclerViewListClicked(View view, int position) {
         MovieResult result = mMovies.get(position);
         reference.child(result.getOriginalTitle()).setValue(result);
+        Intent resultIntent = new Intent();
+        setResult(Activity.RESULT_OK);
         finish();
 
     }

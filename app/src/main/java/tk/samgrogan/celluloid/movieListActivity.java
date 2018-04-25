@@ -1,15 +1,13 @@
 package tk.samgrogan.celluloid;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -60,7 +58,7 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
     private RecyclerView recyclerView;
     private List<MovieResult> mMovies = new ArrayList<>();
     private DatabaseReference reference;
-    private final int PERMISSION_CODE = 123;
+    private final int MOVIE_ADD_CODE = 123;
     private List<CardModel> cards = new ArrayList<>();
 
     @Override
@@ -149,7 +147,7 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
                 Intent intent = new Intent(getApplicationContext(), MetaBrowse.class);
                 String entry = input.getText().toString();
                 intent.putExtra("TITLEENTRY", entry);
-                startActivity(intent);
+                startActivityForResult(intent, MOVIE_ADD_CODE);
 
 
             }
@@ -159,6 +157,15 @@ public class movieListActivity extends AppCompatActivity implements RecyclerView
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MOVIE_ADD_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                Snackbar.make(findViewById(R.id.main_layout), "Movie Added", Snackbar.LENGTH_LONG).show();
+            }
+        }
+
+    }
 
     @Override
     public void recyclerViewListClicked(View view, int position) {
